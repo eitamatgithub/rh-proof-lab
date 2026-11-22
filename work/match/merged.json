@@ -1,0 +1,672 @@
+{
+ "meta": {
+  "generated": "2026-11-22",
+  "verdicts": {
+   "FOUND": "the idea is formalized and on the proof path; read in the source",
+   "PARTIAL": "related code on the proof path, not the idea as stated",
+   "NOT_LINKED": "the code exists, but the name-matched graph shows no path from riemannHypothesis; unconfirmed",
+   "NOT_FOUND": "no trace after an AI search; weak evidence (the search misses objects with terse code names)"
+  },
+  "depth": "steps below riemannHypothesis in the name-matched dependency graph (approximate)",
+  "methods": {
+   "AI-assisted search": "Claude Sonnet on all 21 items, Claude Opus on the 15 not settled; every cited declaration checked to exist",
+   "pattern search": "search for the Lean form of each object (e.g. Real.sqrt x, a twist by (-e))",
+   "manual check": "every FOUND read in the source"
+  },
+  "counts": {
+   "PARTIAL": 5,
+   "NOT_FOUND": 6,
+   "FOUND": 4,
+   "NOT_LINKED": 6
+  }
+ },
+ "items": [
+  {
+   "id": "T01_stepanov_det",
+   "title": "Stepanov determinant",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": "PARTIAL"
+   },
+   "verdict": "PARTIAL",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "On the proof path, `UpperTheory.TNZ.step_detVec` (depth 17) formalizes a 'determinant vector' property for representations twisted by determinant characters, which is part of the broader automorphic machinery but does not directly encode Stepanov's divisor-with-multiplicity argument. The more literal 'StepDet' namespace (in DivisorProofs and SatakeParameters modules) formalizes flag-determinant and step-determinant constructions off the proof path, suggesting the original Stepanov determinant concept was explored but not incorporated into the final proof.",
+   "evidence": [
+    {
+     "name": "UpperTheory.TNZ.step_detVec",
+     "module": "PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.DeterminantVector",
+     "depth": 17,
+     "shows": "States DeterminantVectorProp: that twisting a spherical representation by a determinant character produces a 'determinant vector', and untwisting recovers sphericality. On the proof path, possibly a descendant of the Stepanov determinant idea recast in automorphic terms, but the mathematical content (representation twists, spherical vectors) is not the divisor-with-multiplicity construction described in the note.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.TNZ.DeterminantVector.hasDetVec_twist",
+     "module": "PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.DeterminantVector",
+     "depth": 18,
+     "shows": "If a GL(N) representation ρ is spherical, then twisting by det∘η produces a representation with a 'determinant vector' for η. Part of the on-path determinant machinery.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T02_cm_derivation",
+   "title": "Invariant derivation on a CM curve",
+   "agent_verdicts": {
+    "sonnet": "PARTIAL",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "NOT_FOUND",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "No formalization of D^p = 0 on a CM curve for p inert, nor of the divisibility estimate D^a theta(0)/Omega^a divisible by p^(a/p + a/p^3 + ... - O(log a)), was found anywhere in the archive. The ComplexMultiplication.Differential and FrobeniusAtPrimesLocal modules exist but are off the proof path and do not contain these specific statements. Extensive grep searches for iterated derivations, p-adic valuations of theta periods, and inert-prime derivation vanishing returned nothing matching.",
+   "evidence": [],
+   "correction": null
+  },
+  {
+   "id": "T03_qN_identity",
+   "title": "qN = M^k + R sign argument",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "NOT_FOUND",
+   "confidence": "high",
+   "found_by": "opus search",
+   "summary": "The qN = M^k + R identity using the path quadric, Bertini sign argument from middle cohomology, and iterated Parseval bound is not formalized in the archive's proof path. While 'Bertini' appears in several off-path modules (e.g., Development.EtaleCohomology.WeilConjectures.FermatCount and Development.AbelianVarietyTheory.Definitions.Divisors), and GL5 references exist, none of these are on the proof path and none match the specific 'sign-only proof of Weil and Deligne' structure described in the note. The concept appears to be part of an earlier conceptual timeline (10/19/26+) that was superseded by the iterated theta lift approach.",
+   "evidence": [],
+   "correction": null
+  },
+  {
+   "id": "T04_W_det_bootstrap",
+   "title": "W(1_S) >= 0 via a determinant; bootstrap",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "NOT_FOUND",
+   "confidence": "high",
+   "found_by": "opus search",
+   "summary": "Neither 'bootstrap' nor 'Stepanov' appear anywhere in the archive. The Weil-type functional Formalism.G is defined but no positivity-via-determinant result for it (or any W evaluated at an indicator 1_S) was found, either on the proof path or off it. General determinant nonnegativity lemmas exist but are standard linear algebra, not the specific 'Stepanov with multiplicity one; bootstrap' idea described in the note.",
+   "evidence": [],
+   "correction": null
+  },
+  {
+   "id": "T05_lambda_explicit",
+   "title": "Switch to the von Mangoldt sum; Guinand-Weil sign",
+   "agent_verdicts": {
+    "sonnet": "FOUND",
+    "opus": null
+   },
+   "verdict": "FOUND",
+   "confidence": "checked by hand",
+   "found_by": "sonnet search",
+   "summary": "The defining function G(y) = Σ_{n≤y} Λ(n)·(y/n−1)_+ − y(log y − 1 − γ), which equals Σ_{n≤X} Λ(n)(X/n−1)_+ − X log X + (1+γ)X from the note, is defined verbatim as `Formalism.MainNotions.GlobalTheoryTheory.G` at depth 28 on the proof path. The same module also defines `sumLamChi` and `gChi`, the twisted versions over Dirichlet characters, which correspond to the \"Mehta-like integral over twists\" part of T05. The Guinand-Weil sign aspect is embedded in how these quantities enter the positivity argument (`W(1_S) ≥ 0`) used elsewhere in the proof.",
+   "evidence": [
+    {
+     "name": "Formalism.MainNotions.GlobalTheoryTheory.G",
+     "module": "Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion",
+     "depth": 28,
+     "shows": "Defines G(y) := (Σ n ∈ [1,⌊y⌋] vonMangoldt(n) · max(y/n−1, 0)) − y·(log y − 1 − γ), which is exactly sum_{n≤X} Λ(n)(X/n−1)_+ − X log X + (1+γ)X from the note.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.MainNotions.GlobalTheoryTheory.abelian₂",
+     "module": "Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion",
+     "depth": 29,
+     "shows": "Alias for the von Mangoldt function: abelian₂ n = ArithmeticFunction.vonMangoldt n, confirming the switch to Λ stated in T05.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.MainNotions.GlobalTheoryTheory.sumLamChi",
+     "module": "Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion",
+     "depth": 28,
+     "shows": "Twisted version: Σ_{n≤y} Λ(n)·χ(n)·(y/n−1)_+, generalizing G to Dirichlet characters; corresponds to the 'twists' aspect of T05.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.MainNotions.GlobalTheoryTheory.gChi",
+     "module": "Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion",
+     "depth": 27,
+     "shows": "Combined object: for χ=1 returns G(y), for χ≠1 returns sumLamChi(χ,y) + y·(L'/L)(1,χ); unifies the trivial and twisted sums in one definition used by the proof.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T06_W_eta_bound",
+   "title": "W(1_(0,1] + X^eta 1_(0,1/X]) >= 0 gives > 1 - eta",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "NOT_LINKED"
+   },
+   "verdict": "NOT_LINKED",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The idea of obtaining a zero-free region from a positivity condition involving an X^η window is formalized as `zeroFree_of_rpow_window` in the module `Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ZeroFreeOfRpowWindow`, taking θ ∈ (0,1) and δ > 0 and deriving zero-freeness for a CharFamily. However, this theorem is NOT on the proof path (depth None). The actual proof of RH uses `zeroFreeAll_of_topG` (depth 3) through a different mechanism involving `HostExW` and `TopG`.",
+   "evidence": [
+    {
+     "name": "zeroFree_of_rpow_window",
+     "module": "Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ZeroFreeOfRpowWindow",
+     "depth": null,
+     "shows": "Given a CharFamily F, 0 < θ < 1, δ > 0, derives a zero-free region. Matches the note's 'W(1_(0,1] + X^η 1_(0,1/X]) ≥ 0 gives > 1 - η' — an rpow window positivity argument yielding a zero-free region parameterized by θ (= η).",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T07_ggp_determinants",
+   "title": "Determinants of GGP periods; interlacing",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": null
+   },
+   "verdict": "NOT_LINKED",
+   "confidence": "high",
+   "found_by": "sonnet search",
+   "summary": "The GGP period determinants and interlacing weight formalism are formalized in the archive under the CompanionTheory.AutomorphicTheory.BesselWaveGrids namespace, using the PI.BesselPeriodGGP namespace and InterlacingGrids submodules (e.g. interlaces_of_OK, pairOK_of_interlace). However, every one of these modules has min depth None, meaning they are not on the proof path of the main Riemann Hypothesis theorem.",
+   "evidence": [
+    {
+     "name": "interlaces_of_OK",
+     "module": "CompanionTheory.AutomorphicTheory.BesselWaveGrids.NQText",
+     "depth": null,
+     "shows": "States that interlacing holds given P.OK, connecting the interlacing-weight condition (values 0,1 meaning interlacing) to the GGP period grid parameters k, u, u', lo — directly matching the note's 'values 0, 1 meaning interlacing weights'.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "pairOK_of_interlace",
+     "module": "CompanionTheory.AutomorphicTheory.BesselWaveGrids.InterlacingGrids.PairOKOfInterlace",
+     "depth": null,
+     "shows": "Proves that an interlacing condition on a grid lambda implies pairOK, which is part of the determinant nonnegativity machinery for W(.) containing GGP periods.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T08_iterated_lifts",
+   "title": "Iterated theta lifts, multiplicity m ~ sqrt(X)",
+   "agent_verdicts": {
+    "sonnet": "PARTIAL",
+    "opus": "PARTIAL"
+   },
+   "verdict": "FOUND",
+   "confidence": "checked by hand",
+   "found_by": "pattern search",
+   "summary": null,
+   "evidence": [
+    {
+     "name": "Formalism.MainNotions.PageWin",
+     "module": "Formalism.SharpRestriction.PageFix",
+     "depth": 23,
+     "shows": "Pins the chain-length rank m between sqrt(x*delta1) and 2*sqrt(x*delta1), with n ~ x^(2+8eps) and k ~ x^(9/2+10eps).",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.MainNotions.N.muPart",
+     "module": "Formalism.SharpRestriction.LevelLetterCocycles.DataN",
+     "depth": 10,
+     "shows": "The lift step pi -> pi [+] mu[t]: muPart i = <1, A.muC i, R.t>, appended as Sig ++ [muPart].",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.TP.TLiftK",
+     "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.TLiftK",
+     "depth": 6,
+     "shows": "A single theta lift between unitary groups over a CM field.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": "Both agents said PARTIAL. The pattern search found the sqrt(X) bound on the chain length."
+  },
+  {
+   "id": "T09_lift_norms",
+   "title": "Norms of lifts; Chowla-Selberg, Weyl, Siegel mass",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": "NOT_LINKED"
+   },
+   "verdict": "NOT_LINKED",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The concepts from T09 — Chowla-Selberg, Siegel mass, Weyl dimension formulas, norms of theta lifts, and covolume computations — are all formalized in the archive but consistently appear NOT on the proof path. They reside in off-path modules under CompanionTheory, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts, and GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg. No on-path declaration was found that corresponds to this timeline item's content.",
+   "evidence": [
+    {
+     "name": "siegel_mass_rank_one",
+     "module": "CompanionTheory.AutomorphicTheory.SiegelUnitTheory.VolumeSignatureIndependent",
+     "depth": null,
+     "shows": "Proves a Siegel mass formula at rank one (SiegelOneAll), deriving mass_ratio_under_volume and volume_signature_independent. Directly relevant to 'Siegel mass' in T09 but NOT on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "GlobalTheory.T.kernelLossBound_nonneg_and_level_card_le_exp",
+     "module": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardLevelQuotientGroupLeProdAbsNormPowSq",
+     "depth": null,
+     "shows": "Bounds on level group cardinality and kernel loss — relevant to 'norms of the lifts and level' in T09 — but NOT on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "lift_normSq_le",
+     "module": "GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.PDivision",
+     "depth": null,
+     "shows": "Bounds the L²-norm squared of a lift, directly relevant to 'norms of the lifts' in T09, but NOT on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "low_K_type_multiplicity_one",
+     "module": "CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKTypeMultiplicityOneFock",
+     "depth": null,
+     "shows": "Uses DiscreteSeriesWeylDimension (Weyl dimension formula for discrete series K-types); relevant to the Weyl formula aspect of T09 but NOT on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T10_divisibility_lower",
+   "title": "Lower bound on divisibility of the m-fold lift",
+   "agent_verdicts": {
+    "sonnet": "FOUND",
+    "opus": null
+   },
+   "verdict": "PARTIAL",
+   "confidence": "checked by hand",
+   "found_by": "sonnet search",
+   "summary": "The theorem `GlobalTheory.T.exists_primePow_dvd_mod_eisenstein_of_theta` (depth 18) and its proof companion `GlobalTheory.LiftDiv.dvd_mod_E` (depth 19) in module `Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimePowDvdModEisensteinOfTheta` formalize the sufficient lower bound on divisibility of the m-fold iterated lift. The statement says: if the theta function evaluation at a lift element equals l^n times some element, then the lift element itself decomposes as l^n times a residual element plus an Eisenstein term — establishing the prime-power divisibility lower bound for the theta lift. Both declarations are on the proof path.",
+   "evidence": [
+    {
+     "name": "GlobalTheory.T.exists_primePow_dvd_mod_eisenstein_of_theta",
+     "module": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimePowDvdModEisensteinOfThetaStatement",
+     "depth": 18,
+     "shows": "For a prime l, a BK (lift) structure bk over a field extension K, and an element s of the lift, if the theta evaluation Per.θ l (bk.ev s) = l^n * y, then there exist s', t such that s = l^n * s' + bk.E * t. This is the sufficient lower bound: theta divisibility implies lift element divisibility modulo Eisenstein, capturing T10's 'sufficient lower bound on divisibility of the m-fold iterated lift'.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "GlobalTheory.LiftDiv.dvd_mod_E",
+     "module": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimePowDvdModEisensteinOfTheta",
+     "depth": 19,
+     "shows": "The proof of the same divisibility statement via p-adic norm estimates on the lift, confirming the prime power divisibility. The namespace GlobalTheory.LiftDiv ('Lift Divisibility') directly encodes the concept of divisibility of a theta lift.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": "Sonnet said FOUND. Downgraded on manual check: the lemma is a divisibility statement (l^n | theta(s) implies s = 0 mod (l^n, E)), but nothing ties it to the m-fold lift."
+  },
+  {
+   "id": "T11_iwasawa_tower",
+   "title": "Iwasawa tower via pigeonhole",
+   "agent_verdicts": {
+    "sonnet": "FOUND",
+    "opus": null
+   },
+   "verdict": "FOUND",
+   "confidence": "checked by hand",
+   "found_by": "sonnet search",
+   "summary": "The Iwasawa tower (cyclotomic Z_l-extension) is formalized via the sequence of Galois subgroups `levU l U n` for n : ℕ, with fields K(ζ_{l^n}) giving successive levels. The theorem `exists_iwasawaRank_bound_of_ferreroWashington` applies the Ferrero-Washington theorem to produce a uniform Iwasawa rank bound `r` across all tower levels (`∀ n, XRk l 1 (levU l U n) r`), mirroring the pigeonhole principle on F_{q^n}/F_q (finite extensions of finite fields have bounded cohomology rank). This is used at depth 20 on the proof path.",
+   "evidence": [
+    {
+     "name": "UpperTheory.V.Ws.exists_iwasawaRank_bound_of_ferreroWashington",
+     "module": "Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.ExistsIwasawaRankBoundOfFerreroWashington",
+     "depth": 20,
+     "shows": "Given the Ferrero-Washington theorem and an open abelian subgroup U of the absolute Galois group of Q contained in the kernel of the l-cyclotomic character, there exists a uniform Iwasawa rank bound r such that for all n, the Iwasawa rank of levU l U n (the n-th level of the cyclotomic Z_l-tower built from U) is at most r. This is exactly the Iwasawa tower (cyclotomic Z_l-extension) with uniform rank bound, the number-field analogue of the pigeonhole on F_{q^n}/F_q.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.V.Ws.rank_cocycleSpaces_le_of_towerIwasawaRank",
+     "module": "Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.BdGlob",
+     "depth": 20,
+     "shows": "Given a Tower D with a uniform Iwasawa rank bound r, bounds the ranks of the cocycle and Str spaces at the base level, using the tower structure to propagate cohomological bounds. This is the downstream application of the Iwasawa tower rank bound.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T12_seesaw_bessel",
+   "title": "Seesaw: period of the lift is a Bessel period (Rallis)",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": null
+   },
+   "verdict": "NOT_LINKED",
+   "confidence": "high",
+   "found_by": "sonnet search",
+   "summary": "The seesaw/Bessel period idea is formalized in the archive — most directly in `Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiPeriodGivesBesselPeriodOfLift` (the seesaw identity equating the period of a theta lift to a Bessel/Fourier-Jacobi period) and in a large `PI.BesselPeriodGGP` namespace used throughout `CompanionTheory.AutomorphicTheory`. However, every module containing these declarations is marked NOT on the proof path, so this ingredient is formalized but not wired into the dependency chain leading to the main theorem.",
+   "evidence": [
+    {
+     "name": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiPeriodGivesBesselPeriodOfLift",
+     "module": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiPeriodGivesBesselPeriodOfLift",
+     "depth": null,
+     "shows": "A module (1 declaration) whose name directly matches the seesaw idea: a Fourier-Jacobi period of the theta lift equals a Bessel period of the lift; NOT on proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage.FourierJacobiBessel",
+     "module": "Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage",
+     "depth": null,
+     "shows": "A Prop definition `FourierJacobiBessel` and a proof `fourierJacobiBessel : FourierJacobiBessel` formalizing the Fourier-Jacobi to Bessel period identification; NOT on proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "Development.AutomorphicArithmetic.DivisorFrames.ExistsSeesawIntertwinersOfTriple",
+     "module": "Development.AutomorphicArithmetic.DivisorFrames.ExistsSeesawIntertwinersOfTriple",
+     "depth": null,
+     "shows": "A module with 2 declarations on seesaw intertwiners of a triple (the algebraic mechanism underlying the seesaw identity); NOT on proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.BesselPeriodAdjointPair",
+     "module": "CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.BesselPeriodAdjointPair",
+     "depth": null,
+     "shows": "A module (3 declarations) about Bessel period adjoint pairs in the context of theta lifts between unitary groups, related to the Rallis inner product formula; NOT on proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T13_bost_slope",
+   "title": "Bost slope inequality",
+   "agent_verdicts": {
+    "sonnet": "PARTIAL",
+    "opus": "PARTIAL"
+   },
+   "verdict": "PARTIAL",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The Arakelov slope formalism (definitions of normalized slopes muDef, muMaxDef, muMinDef over Hermitian lattices on number fields) is on the proof path at depth 23-25 in Formalism.HarderNarasimhan.StatementPl. However, the actual Bost slope inequality theorems (slopeInequality, SizeIneq, etc.) are all formalized in Development.AbelianVarietyTheory but NOT on the proof path. The definitions set the stage but the inequality itself is not invoked by the main theorem's dependency chain.",
+   "evidence": [
+    {
+     "name": "Formalism.HN.muDef",
+     "module": "Formalism.HarderNarasimhan.StatementPl",
+     "depth": 23,
+     "shows": "Defines the normalized Arakelov slope mu(L) = 2*slope(L) - log 2 + logDisc(K)/[K:Q] for a submodule L of a Hermitian lattice over a number field K. This is Bost's slope in Arakelov geometry.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.HN.slope",
+     "module": "Formalism.HarderNarasimhan.Statement",
+     "depth": 24,
+     "shows": "Defines the base slope of a submodule via the Harder-Narasimhan formalism, underlying muDef.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.HN.logDisc",
+     "module": "Formalism.HarderNarasimhan.StatementPl",
+     "depth": 24,
+     "shows": "Defines log|disc(K)| used in the normalization of the Arakelov slope.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T14_cost_two_thirds",
+   "title": "Cost of each lift; the 2/3 barrier; division",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": "NOT_LINKED"
+   },
+   "verdict": "NOT_LINKED",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The 'cost of each lift' idea is formalized off the proof path via perLiftC and perLiftC_k (in Siegel-Weil formula modules) and BudgetLiftSquareRoot/OneLevelOfSteps (in HermitianCurvature modules). The 2/3 barrier appears via eulerMascheroniConstant_lt_two_thirds used in several off-path budget/divisor modules. None of these are on the dependency path of the main theorem, though abstract theta lift machinery (TLiftK, IsLift) is used on-path without explicit cost computation.",
+   "evidence": [
+    {
+     "name": "perLiftC_k",
+     "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilAtopMainEq",
+     "depth": null,
+     "shows": "Off-path theorem computing the per-lift constant in the iterated Siegel-Weil setting, directly matching the note's 'precise computation of the cost of each lift'.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "perLiftC",
+     "module": "Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.FockVacuumBounds.MainEq",
+     "depth": null,
+     "shows": "Off-path theorem for the single-lift cost constant in the Siegel-Weil/Fock-vacuum framework.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "UpperTheory.TP.TLiftK",
+     "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.TLiftK",
+     "depth": 6,
+     "shows": "On-path definition encoding k-fold theta lifts for CM fields with hermitian spaces, the abstract lift chain the cost would apply to, but without explicit cost/budget computation.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T15_integral_gcd",
+   "title": "Integral structure across Hecke characters (gcd)",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "PARTIAL"
+   },
+   "verdict": "PARTIAL",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The IntegralStructures.ZetaCharacterDivisibility namespace contains on-proof-path machinery (depth 8-12) about extracting 'divisor' Galois representations compatible with automorphic representations across all places—conceptually a 'gcd' of integral structures. However, the specific idea of gluing across Hecke characters for extra averaging is not explicitly identifiable as a single declaration. Off-path declarations like exists_common_sublattice are closer in spirit but unused.",
+   "evidence": [
+    {
+     "name": "UpperTheory.Gal.Int.Div.DivAll",
+     "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.ZetaCharacterDivisibility.InsideRefl",
+     "depth": 10,
+     "shows": "States that for any automorphic representation U on a CM field, given a 'big' Galois representation ρ, one can extract a smaller 'divisor' representation r (of dimension a) that is compatible at all places—a gcd-like extraction of an integral structure from larger data.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.Gal.Int.Div.IsDivRep",
+     "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.ZetaCharacterDivisibility.InsideRefl",
+     "depth": 11,
+     "shows": "Defines what it means for a Galois representation r to be a 'divisor representation': continuous, semisimple, and at almost all places its Frobenius eigenvalues match the algebraic Satake parameters of the automorphic representation U.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.Gal.Int.Div.seedFinOdd_of_geoOne",
+     "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.ZetaCharacterDivisibility.MainFin",
+     "depth": 8,
+     "shows": "Main theorem of the ZetaCharacterDivisibility module: derives SeedFinOdd (an integral structure result) from geometric input GeoOne, connecting the divisibility machinery to the broader proof.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T16_relative_trace",
+   "title": "Relative trace formula; projected Poincare series",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "NOT_FOUND",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The specific T16 idea—a relative trace formula argument using the sixfold cover of GL5, reducing via Cauchy-Schwarz to bounding a projected Poincaré series norm, with approximate orthogonality of integral structure columns—is not found on the proof path. Extensive Poincaré series machinery (PoincareInHH, coefficientPoincareSeries) and GL5 modules exist in the archive but are entirely off the proof path, suggesting this component was developed but not incorporated into the final proof.",
+   "evidence": [],
+   "correction": null
+  },
+  {
+   "id": "T17_vandiver",
+   "title": "Weakening of Vandiver's conjecture",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "FOUND",
+   "confidence": "checked by hand",
+   "found_by": "pattern search",
+   "summary": null,
+   "evidence": [
+    {
+     "name": "UpperTheory.Top.VVle",
+     "module": "Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN",
+     "depth": 9,
+     "shows": "Requires Sha(D, e) to be finite for 0 < e < t and bounds sum over l of log l * sum over e of length(Sha(D, e)) by B; VAt sets B = sqrt(exp(x^eps)).",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.GaloisCohomology.Sha",
+     "module": "Formalism.GaloisCohomology.Statement",
+     "depth": 11,
+     "shows": "Sha^1 of H^1(G_S, Q_l/Z_l(-e)), with S the places above l.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "Formalism.GaloisCohomology.qzTw",
+     "module": "Formalism.GaloisCohomology.Statement",
+     "depth": 12,
+     "shows": "Q_l/Z_l twisted by chi^(-e), the cyclotomic character to the power -e.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": "Both agents said NOT_FOUND with high confidence. They searched the note's wording; the code calls these objects Sha and QZ l. Found as a quantitative bound, not as a statement about class groups or K-groups."
+  },
+  {
+   "id": "T18_covolumes",
+   "title": "Covolumes, theta series index, congruences",
+   "agent_verdicts": {
+    "sonnet": "PARTIAL",
+    "opus": "PARTIAL"
+   },
+   "verdict": "PARTIAL",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "Covolume computation is on the proof path via BlockChiCovolume.Statement (depth 10, equating -log(covolume) with blockChi) and covolume_eq_sqrt_det_gram (depth 10). Congruences between lifts and forms are represented by CongCRT and GrpCong machinery on the proof path (depths 12-14), including hecke_lift_separated_of_lattice_congruence. However, theta series index (theta_lattice_index, thetaIndexBound) is formalized in the archive but NOT on the proof path.",
+   "evidence": [
+    {
+     "name": "GroundTheory.Heights₂.Heights.HilbertSamuel.BlockChiCovolume.proof",
+     "module": "GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockChiCovolume",
+     "depth": 9,
+     "shows": "Proves that -log(ZLattice.covolume) equals blockChi for a lattice of multi-homogeneous sections, formalizing the covolume computation aspect of T18.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "GroundTheory.Heights₂.Heights.covolume_eq_sqrt_det_gram",
+     "module": "GroundTheory.HeightsAndTheta.Heights.CovolumeGram",
+     "depth": 10,
+     "shows": "Covolume of a Z-lattice equals sqrt(det(Gram matrix)), a foundational covolume identity used throughout the height-and-theta machinery.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.hecke_lift_separated_of_lattice_congruence",
+     "module": "Development.AutomorphicArithmetic.CommutativeAlgebra.HeckeLiftSeparatedOfLatticeCongruence",
+     "depth": 13,
+     "shows": "Derives LiftSep (lift separation) from CongCRT and GrpCong, formalizing congruences between lifts and forms on the proof path.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.congruenceCRT_of_latticeGen",
+     "module": "Development.AutomorphicArithmetic.CommutativeAlgebra.CongruenceCRTOfLatticeGen",
+     "depth": 12,
+     "shows": "Derives CongCRT (congruence CRT property) from LatGen (lattice generation), a key step in the congruence machinery.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.arithmeticGroup_congruenceSubgroupProperty",
+     "module": "Development.AutomorphicArithmetic.CommutativeAlgebra.ArithmeticGroupCongruenceSubgroupProperty",
+     "depth": 14,
+     "shows": "Proves GrpCong (arithmetic group congruence subgroup property), another input to the congruence/lift separation chain.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "T19_behrend",
+   "title": "Choice of Iwasawa tower using Behrend",
+   "agent_verdicts": {
+    "sonnet": "NOT_LINKED",
+    "opus": null
+   },
+   "verdict": "NOT_LINKED",
+   "confidence": "high",
+   "found_by": "sonnet search",
+   "summary": "Behrend's construction (sets without 3-term arithmetic progressions) is fully formalized in the archive under the namespace `Formalism.BehrendSets`, including a definition `BehrendFree` and several supporting lemmas. However, every single module in this namespace is marked [NOT on proof path], confirming the author's parenthetical remark that this idea is 'obviously going to be unnecessary': it was coded up but ultimately not used by the final proof of the Riemann Hypothesis.",
+   "evidence": [
+    {
+     "name": "Formalism.BehrendSets.Statement.BehrendFree",
+     "module": "Formalism.BehrendSets.Statement",
+     "depth": null,
+     "shows": "Defines `BehrendFree K T` (a Finset T of naturals is free of K-term arithmetic progressions in the Behrend sense) and states existence theorems for such sets; this is the core of Behrend's construction used for the Iwasawa tower choice, but the module is not on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "Formalism.BehrendSets.BehrendVariance.SpaceFreeOfBehrendFree",
+     "module": "Formalism.BehrendSets.BehrendVariance.SpaceFreeOfBehrendFree",
+     "depth": null,
+     "shows": "A supporting lemma connecting space-freeness to BehrendFree; part of the Behrend-sets infrastructure, also not on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    },
+    {
+     "name": "Formalism.BehrendSets.FinalE",
+     "module": "Formalism.BehrendSets.FinalE",
+     "depth": null,
+     "shows": "A final result in the BehrendSets library that imports SpaceFreeOfBehrendFree; not on the proof path.",
+     "validated": "found by whole-archive text search; no path from the proof in our graph"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "P3_O2n_mult2",
+   "title": "Multiplicity 2 on O(2,n) via a natively automorphic determinant",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "NOT_FOUND",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The specific idea of 'multiplicity 2 on O(2,n) via a natively-automorphic determinant' is not formalized in the archive. The archive works with unitary groups and a VWin framework for winning multiplicity via theta lifts, but O(2,n) orthogonal groups do not appear on the proof path. A 'weil_orthogonal_group_invariance' theorem and 'AutomorphicDetection' modules exist in the archive but are NOT on the proof path.",
+   "evidence": [
+    {
+     "name": "UpperTheory.Top.VWin",
+     "module": "Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN",
+     "depth": 6,
+     "shows": "Defines VWin as 'for all ψ : PChar, VWinAt ψ 401' — the archive's overall 'winning multiplicity' condition, but does not reference O(2,n) or a specific multiplicity-2 result.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.Top.VWinAt",
+     "module": "Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN",
+     "depth": 7,
+     "shows": "The detailed win condition involving WinPair, PageN, and VAt — encodes the full theta-lift multiplicity winning mechanism but without reference to orthogonal groups or a multiplicity-2 stepping stone.",
+     "validated": "on proof path"
+    },
+    {
+     "name": "UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin",
+     "module": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin",
+     "depth": 5,
+     "shows": "Given VWin and published literature results, derives EveryCharacter — the theta pair lift chain conclusion. Related to 'winning more multiplicity with more theta lifts' but not specific to O(2,n) multiplicity 2.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  },
+  {
+   "id": "F3_gauss_sum_cover",
+   "title": "Normalized Gauss sum on the |mu_K|-fold cover of GL2",
+   "agent_verdicts": {
+    "sonnet": "NOT_FOUND",
+    "opus": "NOT_FOUND"
+   },
+   "verdict": "NOT_FOUND",
+   "confidence": "medium",
+   "found_by": "opus search",
+   "summary": "The specific construction of a normalized Gauss sum of order #|mu_K| on the #|mu_K|-fold cover of GL2, with the reciprocity law giving a complete graph simplified to a path quadric, is not formalized anywhere in the archive. The archive has a local Gauss sum (gaussSumAt) on the proof path for Hecke epsilon factors, and metaplectic representation code off the proof path, but neither matches this concept. The idea appears to be informal motivation in Footnote 3 for why the path quadric arises, not a separately formalized step.",
+   "evidence": [
+    {
+     "name": "GlobalTheory.HeckeEps.gaussSumAt",
+     "module": "Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM",
+     "depth": 14,
+     "shows": "A local Gauss sum for Hecke characters at a prime w, summing gaussTerm over units mod w^a. This is a standard local Gauss sum ingredient for the Tate functional equation, not the mu_K-fold cover construction described in F3.",
+     "validated": "on proof path"
+    }
+   ],
+   "correction": null
+  }
+ ]
+}
