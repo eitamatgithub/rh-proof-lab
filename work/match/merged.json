@@ -2,36 +2,41 @@
  "meta": {
   "generated": "2026-11-22",
   "verdicts": {
-   "FOUND": "the idea is formalized and on the proof path; read in the source",
-   "PARTIAL": "related code on the proof path, not the idea as stated",
-   "NOT_LINKED": "the code exists, but the name-matched graph shows no path from riemannHypothesis; unconfirmed",
-   "NOT_FOUND": "no trace after an AI search; weak evidence (the search misses objects with terse code names)"
+   "FOUND": "the idea is formalized and used by the proof; read in the source",
+   "PARTIAL": "related code used by the proof, not the idea as stated",
+   "STILL_LOOKING": "still looking for the link: the code exists, but no use from riemannHypothesis found yet. We checked the links written out in the source, not the ones Lean adds by itself (instances, simp lemmas, dot notation), which only the certified proof export lists",
+   "NOT_FOUND": "our searches did not find the idea: case-sensitive regular expressions for the objects its possible proofs need, over the statements and proof bodies of all 1,060,824 declarations and the text of all 175,187 files, plus AI-assisted search and statement-similarity ranking. This does not mean the idea is not in the code; see not_found_explained.md for the exact patterns and counts"
   },
   "depth": "steps below riemannHypothesis in the name-matched dependency graph (approximate)",
   "methods": {
    "AI-assisted search": "Claude Sonnet on all 21 items, Claude Opus on the 15 not settled; every cited declaration checked to exist",
    "pattern search": "search for the Lean form of each object (e.g. Real.sqrt x, a twist by (-e))",
-   "manual check": "every FOUND read in the source"
+   "manual check": "every FOUND read in the source",
+   "whole-archive text search": "about 40 patterns over all 175,187 files, for each idea still unmatched; matches checked against the dependency graph and read in the source",
+   "Lean export check": "whether a declaration is used by the proof, from Lean's export of the five theorems, via the published cut lists of keithadler/rh-trim (Apache-2.0): a declaration it keeps that is not an instance, attribute-tagged or build-only is in the export",
+   "whole-archive census": "for each idea, count declarations anywhere in the archive that mention each Lean form of the objects it needs",
+   "proof-route census": "for each idea, 2–3 proof sketches along different routes; census of the intermediate objects each route needs, with exact used counts"
   },
   "counts": {
-   "PARTIAL": 5,
-   "NOT_FOUND": 6,
-   "FOUND": 4,
-   "NOT_LINKED": 6
-  }
+   "FOUND": 9,
+   "PARTIAL": 9,
+   "STILL_LOOKING": 0,
+   "NOT_FOUND": 3
+  },
+  "updated": "2026-11-23"
  },
  "items": [
   {
    "id": "T01_stepanov_det",
    "title": "Stepanov determinant",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
+    "sonnet": "STILL_LOOKING",
     "opus": "PARTIAL"
    },
    "verdict": "PARTIAL",
    "confidence": "medium",
    "found_by": "opus search",
-   "summary": "On the proof path, `UpperTheory.TNZ.step_detVec` (depth 17) formalizes a 'determinant vector' property for representations twisted by determinant characters, which is part of the broader automorphic machinery but does not directly encode Stepanov's divisor-with-multiplicity argument. The more literal 'StepDet' namespace (in DivisorProofs and SatakeParameters modules) formalizes flag-determinant and step-determinant constructions off the proof path, suggesting the original Stepanov determinant concept was explored but not incorporated into the final proof.",
+   "summary": "Stepanov's multiplicity step is used: exists_maximal_mem_pow_of_hasse_vanishing (Hasse derivatives vanishing to order N ⇒ in the N-th power of the maximal ideal). A 'step determinant' constant for each step j of the chain of lifts is used and shown to be a p-adic unit (stepDeterminantConstant_unit_independent). The Stepanov determinant itself, as a divisor with multiplicity over ℤ, was not located.",
    "evidence": [
     {
      "name": "UpperTheory.TNZ.step_detVec",
@@ -46,6 +51,20 @@
      "depth": 18,
      "shows": "If a GL(N) representation ρ is spherical, then twisting by det∘η produces a representation with a 'determinant vector' for η. Part of the on-path determinant machinery.",
      "validated": "on proof path"
+    },
+    {
+     "name": "GlobalTheory.T.exists_maximal_mem_pow_of_hasse_vanishing",
+     "module": "HasseJetVanishingMemPowStatement",
+     "depth": null,
+     "shows": "Stepanov's multiplicity step: Hasse derivations vanishing to order N at a point of a curve put the function in the N-th power of its maximal ideal",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "GlobalTheory.T.stepDeterminantConstant_unit_independent",
+     "module": "Development.AbelianVarietyTheory.Proofs.SatakeParameters.StepDeterminantConstantUnitIndependentStatement",
+     "depth": null,
+     "shows": "the step-determinant constant of each lift step is a p-adic unit",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
    "correction": null
@@ -57,12 +76,42 @@
     "sonnet": "PARTIAL",
     "opus": "NOT_FOUND"
    },
-   "verdict": "NOT_FOUND",
+   "verdict": "PARTIAL",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "No formalization of D^p = 0 on a CM curve for p inert, nor of the divisibility estimate D^a theta(0)/Omega^a divisible by p^(a/p + a/p^3 + ... - O(log a)), was found anywhere in the archive. The ComplexMultiplication.Differential and FrobeniusAtPrimesLocal modules exist but are off the proof path and do not contain these specific statements. Extensive grep searches for iterated derivations, p-adic valuations of theta periods, and inert-prime derivation vanishing returned nothing matching.",
-   "evidence": [],
-   "correction": null
+   "found_by": "Lean export check + reading",
+   "summary": "The ingredients are used by the proof: the invariant differential of a CM elliptic curve with isogeny pullbacks (ComplexMultiplication.Differential), supersingular reduction, the inseparable Frobenius twist, and the p-adic size of theta jets: ‖n!·coeff_n‖ = ‖λ(θ^(n)(0))‖ over ℂ_p (TorsionTranslateThetaJetsDenominatorBound). Our earlier search missed it because the code says \"jets\", not \"derivatives\". The exact bound p^(a/p + a/p³ + … − O(log a)) was not located.",
+   "evidence": [
+    {
+     "name": "omegaAt / invariantDifferential",
+     "module": "GroundTheory.GlobalFields.ComplexMultiplication.Differential",
+     "depth": null,
+     "shows": "invariant differential on an elliptic curve, pullback under isogenies",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "frobeniusTwist",
+     "module": "GroundTheory.GlobalFields.ComplexMultiplication.InseparableFrobenius",
+     "depth": null,
+     "shows": "inseparable Frobenius twist, x ↦ x^p",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "IsSupersingular",
+     "module": "GroundTheory.ArithmeticGeometry.AbelianVarieties.Supersingular",
+     "depth": null,
+     "shows": "supersingular reduction",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "norm_jet_atU",
+     "module": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.TorsionTranslateThetaJetsDenominatorBound",
+     "depth": null,
+     "shows": "‖n!·coeff_n‖ = ‖λ(θ^(n)(0))‖: p-adic size of theta Taylor coefficients",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    }
+   ],
+   "correction": null,
+   "previous_verdict": "NOT_FOUND"
   },
   {
    "id": "T03_qN_identity",
@@ -71,12 +120,36 @@
     "sonnet": "NOT_FOUND",
     "opus": "NOT_FOUND"
    },
-   "verdict": "NOT_FOUND",
+   "verdict": "PARTIAL",
    "confidence": "high",
-   "found_by": "opus search",
-   "summary": "The qN = M^k + R identity using the path quadric, Bertini sign argument from middle cohomology, and iterated Parseval bound is not formalized in the archive's proof path. While 'Bertini' appears in several off-path modules (e.g., Development.EtaleCohomology.WeilConjectures.FermatCount and Development.AbelianVarietyTheory.Definitions.Divisors), and GL5 references exist, none of these are on the proof path and none match the specific 'sign-only proof of Weil and Deligne' structure described in the note. The concept appears to be part of an earlier conceptual timeline (10/19/26+) that was superseded by the iterated theta lift approach.",
-   "evidence": [],
-   "correction": null
+   "found_by": "proof-route census + Lean formalization of the identity + archive search",
+   "summary": "The method is used, the note's instance is not. The code counts zeros of a nondegenerate quadratic form over a finite field exactly the way qN = M^k + R does: detect zeros with additive characters (sum_psi_mul: Σ_t ψ(t·c) = q·[c = 0]), split off the main term, and bound the rest by Gauss sums: (#{xᵀSx = β} − q^(n−1))² ≤ q^n (card_quadric_sub_sq_le). An exact count q·N = q^(2M) + (q − 1)(ηq)^M for sums of binary forms (card_sum_zero) gives the same numbers as the path quadric for even k. Not located: the path quadric x₁x₂ + … + x₍ₖ₋₁₎xₖ itself, the weights t(x_i), and the sign from Bertini and middle cohomology. We proved the identity, the iterated-Parseval bound and the unweighted sign in Lean ourselves to know what to look for.",
+   "evidence": [
+    {
+     "name": "card_quadric_sub_sq_le",
+     "module": "Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CardQuadricSubSqLe",
+     "depth": null,
+     "shows": "(#{x : xᵀSx = β} − q^(n−1))² ≤ q^n for a nondegenerate symmetric S (char ≠ 2): the qN = main term + R method with a square-root bound",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "sum_psi_mul",
+     "module": "Development.DiscreteGroups.GlobalIrreducibility.DzFeOrth",
+     "depth": null,
+     "shows": "Σ_t ψ(t·c) = q·[c = 0] for a nontrivial additive character: detecting zeros with characters",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "card_sum_zero",
+     "module": "Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NcardSumBinaryFormNeZero",
+     "depth": null,
+     "shows": "q·#{Σ_i Q(x_i) = 0} = q^(2M) + (q − 1)(ηq)^M: an exact count with a definite sign, for sums of binary forms",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    }
+   ],
+   "correction": null,
+   "previous_verdict": "NOT_FOUND",
+   "related": null
   },
   {
    "id": "T04_W_det_bootstrap",
@@ -86,11 +159,13 @@
     "opus": "NOT_FOUND"
    },
    "verdict": "NOT_FOUND",
-   "confidence": "high",
-   "found_by": "opus search",
-   "summary": "Neither 'bootstrap' nor 'Stepanov' appear anywhere in the archive. The Weil-type functional Formalism.G is defined but no positivity-via-determinant result for it (or any W evaluated at an indicator 1_S) was found, either on the proof path or off it. General determinant nonnegativity lemmas exist but are standard linear algebra, not the specific 'Stepanov with multiplicity one; bootstrap' idea described in the note.",
+   "confidence": null,
+   "found_by": "whole-archive census + Lean export check",
+   "summary": "Not found by our searches. The pattern for W applied to an indicator (W[A-Za-z]* \\(?(Set\\.)?indicator) had 0 matches in statements and proof bodies. Determinant-positivity patterns matched 172 used declarations; the ones we read are about heights and Gram volumes, not W(1_S). What we know the proof uses instead: the note calls this \"Stepanov with multiplicity one again\"; the proof's multiplicity comes from the m ≈ √X chain of theta lifts (T08), and its window bound (T06) from that.",
    "evidence": [],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "NOT_FOUND",
+   "related": "Related, not the idea: Stepanov's multiplicity machinery is used (exists_maximal_mem_pow_of_hasse_vanishing)."
   },
   {
    "id": "T05_lambda_explicit",
@@ -140,51 +215,53 @@
    "title": "W(1_(0,1] + X^eta 1_(0,1/X]) >= 0 gives > 1 - eta",
    "agent_verdicts": {
     "sonnet": "NOT_FOUND",
-    "opus": "NOT_LINKED"
+    "opus": "STILL_LOOKING"
    },
-   "verdict": "NOT_LINKED",
+   "verdict": "FOUND",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The idea of obtaining a zero-free region from a positivity condition involving an X^η window is formalized as `zeroFree_of_rpow_window` in the module `Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ZeroFreeOfRpowWindow`, taking θ ∈ (0,1) and δ > 0 and deriving zero-freeness for a CharFamily. However, this theorem is NOT on the proof path (depth None). The actual proof of RH uses `zeroFreeAll_of_topG` (depth 3) through a different mechanism involving `HostExW` and `TopG`.",
+   "found_by": "Lean export check + reading",
+   "summary": "zeroFree_of_rpow_window: if the centred prime sum Gm stays ≤ C·y^θ on windows [Y, Y^(1+δ)] starting arbitrarily late, the character family is zero-free beyond θ. This is the note's \"a window bound gives zero-freeness past 1 − η\", in Landau form. Our graph had missed its link; Lean's export confirms the proof uses it.",
    "evidence": [
     {
      "name": "zeroFree_of_rpow_window",
      "module": "Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ZeroFreeOfRpowWindow",
      "depth": null,
      "shows": "Given a CharFamily F, 0 < θ < 1, δ > 0, derives a zero-free region. Matches the note's 'W(1_(0,1] + X^η 1_(0,1/X]) ≥ 0 gives > 1 - η' — an rpow window positivity argument yielding a zero-free region parameterized by θ (= η).",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "T07_ggp_determinants",
    "title": "Determinants of GGP periods; interlacing",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
+    "sonnet": "STILL_LOOKING",
     "opus": null
    },
-   "verdict": "NOT_LINKED",
+   "verdict": "PARTIAL",
    "confidence": "high",
-   "found_by": "sonnet search",
-   "summary": "The GGP period determinants and interlacing weight formalism are formalized in the archive under the CompanionTheory.AutomorphicTheory.BesselWaveGrids namespace, using the PI.BesselPeriodGGP namespace and InterlacingGrids submodules (e.g. interlaces_of_OK, pairOK_of_interlace). However, every one of these modules has min depth None, meaning they are not on the proof path of the main Riemann Hypothesis theorem.",
+   "found_by": "Lean export check + reading",
+   "summary": "The GGP interlacing condition is formalized and used (interlaces_of_OK, pairOK_of_interlace in BesselWaveGrids). Determinants of GGP periods were not located.",
    "evidence": [
     {
      "name": "interlaces_of_OK",
      "module": "CompanionTheory.AutomorphicTheory.BesselWaveGrids.NQText",
      "depth": null,
      "shows": "States that interlacing holds given P.OK, connecting the interlacing-weight condition (values 0,1 meaning interlacing) to the GGP period grid parameters k, u, u', lo — directly matching the note's 'values 0, 1 meaning interlacing weights'.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "pairOK_of_interlace",
      "module": "CompanionTheory.AutomorphicTheory.BesselWaveGrids.InterlacingGrids.PairOKOfInterlace",
      "depth": null,
      "shows": "Proves that an interlacing condition on a grid lambda implies pairOK, which is part of the determinant nonnegativity machinery for W(.) containing GGP periods.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "T08_iterated_lifts",
@@ -226,44 +303,45 @@
    "id": "T09_lift_norms",
    "title": "Norms of lifts; Chowla-Selberg, Weyl, Siegel mass",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
-    "opus": "NOT_LINKED"
+    "sonnet": "STILL_LOOKING",
+    "opus": "STILL_LOOKING"
    },
-   "verdict": "NOT_LINKED",
+   "verdict": "PARTIAL",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The concepts from T09 — Chowla-Selberg, Siegel mass, Weyl dimension formulas, norms of theta lifts, and covolume computations — are all formalized in the archive but consistently appear NOT on the proof path. They reside in off-path modules under CompanionTheory, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts, and GroundTheory.HeightsAndTheta.Heights.ChowlaSelberg. No on-path declaration was found that corresponds to this timeline item's content.",
+   "found_by": "Lean export check",
+   "summary": "All three tools the note names are used by the proof: the Siegel mass formula (siegel_mass_rank_one), Chowla–Selberg (164 used declarations) and the Weyl dimension formula (76 used). The computation of the lift norms itself was not traced.",
    "evidence": [
     {
      "name": "siegel_mass_rank_one",
      "module": "CompanionTheory.AutomorphicTheory.SiegelUnitTheory.VolumeSignatureIndependent",
      "depth": null,
      "shows": "Proves a Siegel mass formula at rank one (SiegelOneAll), deriving mass_ratio_under_volume and volume_signature_independent. Directly relevant to 'Siegel mass' in T09 but NOT on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "GlobalTheory.T.kernelLossBound_nonneg_and_level_card_le_exp",
      "module": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardLevelQuotientGroupLeProdAbsNormPowSq",
      "depth": null,
      "shows": "Bounds on level group cardinality and kernel loss — relevant to 'norms of the lifts and level' in T09 — but NOT on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "lift_normSq_le",
      "module": "GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.PDivision",
      "depth": null,
      "shows": "Bounds the L²-norm squared of a lift, directly relevant to 'norms of the lifts' in T09, but NOT on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "low_K_type_multiplicity_one",
      "module": "CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.LowKTypeMultiplicityOneFock",
      "depth": null,
      "shows": "Uses DiscreteSeriesWeylDimension (Weyl dimension formula for discrete series K-types); relevant to the Weyl formula aspect of T09 but NOT on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "T10_divisibility_lower",
@@ -327,44 +405,45 @@
    "id": "T12_seesaw_bessel",
    "title": "Seesaw: period of the lift is a Bessel period (Rallis)",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
+    "sonnet": "STILL_LOOKING",
     "opus": null
    },
-   "verdict": "NOT_LINKED",
+   "verdict": "FOUND",
    "confidence": "high",
-   "found_by": "sonnet search",
-   "summary": "The seesaw/Bessel period idea is formalized in the archive — most directly in `Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiPeriodGivesBesselPeriodOfLift` (the seesaw identity equating the period of a theta lift to a Bessel/Fourier-Jacobi period) and in a large `PI.BesselPeriodGGP` namespace used throughout `CompanionTheory.AutomorphicTheory`. However, every module containing these declarations is marked NOT on the proof path, so this ingredient is formalized but not wired into the dependency chain leading to the main theorem.",
+   "found_by": "Lean export check + reading",
+   "summary": "UpperTheory.exists_seesaw_intertwiners_of_triple builds seesaw intertwiners between Weil representations for a triple with rank A + rank A' = rank W, and upBF (FourierJacobiPeriodGivesBesselPeriodOfLift) shows a Fourier–Jacobi period gives the Bessel period of the lift. Both are used by the proof per Lean's export.",
    "evidence": [
     {
      "name": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiPeriodGivesBesselPeriodOfLift",
      "module": "Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiPeriodGivesBesselPeriodOfLift",
      "depth": null,
      "shows": "A module (1 declaration) whose name directly matches the seesaw idea: a Fourier-Jacobi period of the theta lift equals a Bessel period of the lift; NOT on proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage.FourierJacobiBessel",
      "module": "Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FourierJacobiAverage",
      "depth": null,
      "shows": "A Prop definition `FourierJacobiBessel` and a proof `fourierJacobiBessel : FourierJacobiBessel` formalizing the Fourier-Jacobi to Bessel period identification; NOT on proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "Development.AutomorphicArithmetic.DivisorFrames.ExistsSeesawIntertwinersOfTriple",
      "module": "Development.AutomorphicArithmetic.DivisorFrames.ExistsSeesawIntertwinersOfTriple",
      "depth": null,
      "shows": "A module with 2 declarations on seesaw intertwiners of a triple (the algebraic mechanism underlying the seesaw identity); NOT on proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.BesselPeriodAdjointPair",
      "module": "CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.BesselPeriodAdjointPair",
      "depth": null,
      "shows": "A module (3 declarations) about Bessel period adjoint pairs in the context of theta lifts between unitary groups, related to the Rallis inner product formula; NOT on proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "T13_bost_slope",
@@ -373,11 +452,32 @@
     "sonnet": "PARTIAL",
     "opus": "PARTIAL"
    },
-   "verdict": "PARTIAL",
+   "verdict": "FOUND",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The Arakelov slope formalism (definitions of normalized slopes muDef, muMaxDef, muMinDef over Hermitian lattices on number fields) is on the proof path at depth 23-25 in Formalism.HarderNarasimhan.StatementPl. However, the actual Bost slope inequality theorems (slopeInequality, SizeIneq, etc.) are all formalized in Development.AbelianVarietyTheory but NOT on the proof path. The definitions set the stage but the inequality itself is not invoked by the main theorem's dependency chain.",
+   "found_by": "Lean export check",
+   "summary": "Bost's slope inequality is formalized and used. For Euclidean lattices (Formalism.LatticeSlopes): if φ : L → M is injective with ‖φ(x)‖ ≤ C‖x‖, then slope(L) ≤ μ_max(M) + log C; its proof module is used. A Hermitian-lattice version over number fields (SizeIneq, with normalized slopes muDef, muMaxDef) is used too. Our earlier graph had missed the link.",
    "evidence": [
+    {
+     "name": "SlopeInequality",
+     "module": "Formalism.LatticeSlopes.Statement",
+     "depth": null,
+     "shows": "slope L ≤ muMax M + log C for an injective map of norm ≤ C between Euclidean lattices",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "slopeInequality",
+     "module": "Formalism.LatticeSlopes.LatticeSlopesProofs.SlopeInequality",
+     "depth": null,
+     "shows": "the proof of the inequality",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "SizeIneq",
+     "module": "Formalism.HarderNarasimhan.StatementPl",
+     "depth": null,
+     "shows": "size inequality for Hermitian lattices over a totally complex number field",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
     {
      "name": "Formalism.HN.muDef",
      "module": "Formalism.HarderNarasimhan.StatementPl",
@@ -400,43 +500,45 @@
      "validated": "on proof path"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "PARTIAL"
   },
   {
    "id": "T14_cost_two_thirds",
    "title": "Cost of each lift; the 2/3 barrier; division",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
-    "opus": "NOT_LINKED"
+    "sonnet": "STILL_LOOKING",
+    "opus": "STILL_LOOKING"
    },
-   "verdict": "NOT_LINKED",
+   "verdict": "PARTIAL",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The 'cost of each lift' idea is formalized off the proof path via perLiftC and perLiftC_k (in Siegel-Weil formula modules) and BudgetLiftSquareRoot/OneLevelOfSteps (in HermitianCurvature modules). The 2/3 barrier appears via eulerMascheroniConstant_lt_two_thirds used in several off-path budget/divisor modules. None of these are on the dependency path of the main theorem, though abstract theta lift machinery (TLiftK, IsLift) is used on-path without explicit cost computation.",
+   "found_by": "Lean export check + reading",
+   "summary": "A per-lift constant is used (perLiftC, perLiftC_k: a Siegel–Weil-type value per lift). The 2/3 barrier was not identified: the only 2/3 in sight is Mathlib's γ < 2/3, used inside numeric size bounds.",
    "evidence": [
     {
      "name": "perLiftC_k",
      "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilAtopMainEq",
      "depth": null,
      "shows": "Off-path theorem computing the per-lift constant in the iterated Siegel-Weil setting, directly matching the note's 'precise computation of the cost of each lift'.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "perLiftC",
      "module": "Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.FockVacuumBounds.MainEq",
      "depth": null,
      "shows": "Off-path theorem for the single-lift cost constant in the Siegel-Weil/Fock-vacuum framework.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "UpperTheory.TP.TLiftK",
      "module": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.TLiftK",
      "depth": 6,
      "shows": "On-path definition encoding k-fold theta lifts for CM fields with hermitian spaces, the abstract lift chain the cost would apply to, but without explicit cost/budget computation.",
-     "validated": "on proof path"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "T15_integral_gcd",
@@ -448,7 +550,7 @@
    "verdict": "PARTIAL",
    "confidence": "medium",
    "found_by": "opus search",
-   "summary": "The IntegralStructures.ZetaCharacterDivisibility namespace contains on-proof-path machinery (depth 8-12) about extracting 'divisor' Galois representations compatible with automorphic representations across all places—conceptually a 'gcd' of integral structures. However, the specific idea of gluing across Hecke characters for extra averaging is not explicitly identifiable as a single declaration. Off-path declarations like exists_common_sublattice are closer in spirit but unused.",
+   "summary": "Divisor Galois representations compatible with the automorphic ones at all places are used (UpperTheory.Gal.Int.Div: DivAll, IsDivRep), and so is exists_common_sublattice (a common sublattice of two lattices, a 'gcd' of integral structures). Gluing across Hecke characters for extra averaging was not located as such.",
    "evidence": [
     {
      "name": "UpperTheory.Gal.Int.Div.DivAll",
@@ -470,6 +572,13 @@
      "depth": 8,
      "shows": "Main theorem of the ZetaCharacterDivisibility module: derives SeedFinOdd (an integral structure result) from geometric input GeoOne, connecting the divisibility machinery to the broader proof.",
      "validated": "on proof path"
+    },
+    {
+     "name": "exists_common_sublattice",
+     "module": "Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ContinuousThetaSectionPointwiseNormSq",
+     "depth": null,
+     "shows": "two lattices have a common sublattice",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
    "correction": null
@@ -478,15 +587,52 @@
    "id": "T16_relative_trace",
    "title": "Relative trace formula; projected Poincare series",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
+    "sonnet": "STILL_LOOKING",
     "opus": "NOT_FOUND"
    },
-   "verdict": "NOT_FOUND",
+   "verdict": "PARTIAL",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The specific T16 idea—a relative trace formula argument using the sixfold cover of GL5, reducing via Cauchy-Schwarz to bounding a projected Poincaré series norm, with approximate orthogonality of integral structure columns—is not found on the proof path. Extensive Poincaré series machinery (PoincareInHH, coefficientPoincareSeries) and GL5 modules exist in the archive but are entirely off the proof path, suggesting this component was developed but not incorporated into the final proof.",
-   "evidence": [],
-   "correction": null
+   "found_by": "Lean export check + whole-archive text search",
+   "summary": "The Poincaré-series side is used by the proof: 81 declarations, incl. approximate unitary Poincaré series, their pairing with Bessel periods and square-integrability. Our searches did not find a relative trace formula: the pattern [Rr]elative[A-Z_]?[Tt]race|relativeTrace matched 2 used declarations, both traces of field extensions.",
+   "evidence": [
+    {
+     "name": "ExistsUnitaryApproxPoincareSeries",
+     "module": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryApproxPoincareSeries",
+     "depth": null,
+     "shows": "approximate unitary Poincaré series",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "ExistsApproxPoincareSeriesAtThetaSetupPoints",
+     "module": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsApproxPoincareSeriesAtThetaSetupPoints",
+     "depth": null,
+     "shows": "approximate Poincaré series at theta set-up points",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "ConjugateRowPairingPoincareSeriesBesselPeriods",
+     "module": "Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjugateRowPairingPoincareSeriesBesselPeriods",
+     "depth": null,
+     "shows": "Poincaré series paired with Bessel periods",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "InnerPoincareSeriesEqSetIntegralUnfolding",
+     "module": "Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.InnerPoincareSeriesEqSetIntegralUnfolding",
+     "depth": null,
+     "shows": "unfolding of the Poincaré-series inner product",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    },
+    {
+     "name": "PoincareSeriesSquareIntegrable",
+     "module": "Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareSeriesSquareIntegrable",
+     "depth": null,
+     "shows": "square-integrability of Poincaré series",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
+    }
+   ],
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "T17_vandiver",
@@ -531,10 +677,10 @@
     "sonnet": "PARTIAL",
     "opus": "PARTIAL"
    },
-   "verdict": "PARTIAL",
+   "verdict": "FOUND",
    "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "Covolume computation is on the proof path via BlockChiCovolume.Statement (depth 10, equating -log(covolume) with blockChi) and covolume_eq_sqrt_det_gram (depth 10). Congruences between lifts and forms are represented by CongCRT and GrpCong machinery on the proof path (depths 12-14), including hecke_lift_separated_of_lattice_congruence. However, theta series index (theta_lattice_index, thetaIndexBound) is formalized in the archive but NOT on the proof path.",
+   "found_by": "Lean export check",
+   "summary": "All three parts are used by the proof: covolumes (covolume_eq_sqrt_det_gram, BlockChiCovolume: −log covolume = blockChi), the theta series' index (theta_lattice_index: the relative index of the theta lattices is idx^N), and congruences between lifts and forms (hecke_lift_separated_of_lattice_congruence). Our earlier graph had missed the theta-index link.",
    "evidence": [
     {
      "name": "GroundTheory.Heights₂.Heights.HilbertSamuel.BlockChiCovolume.proof",
@@ -570,45 +716,54 @@
      "depth": 14,
      "shows": "Proves GrpCong (arithmetic group congruence subgroup property), another input to the congruence/lift separation chain.",
      "validated": "on proof path"
+    },
+    {
+     "name": "theta_lattice_index",
+     "module": "Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeIndex",
+     "depth": null,
+     "shows": "relative index of the theta lattices equals idx D L ^ N",
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "PARTIAL"
   },
   {
    "id": "T19_behrend",
    "title": "Choice of Iwasawa tower using Behrend",
    "agent_verdicts": {
-    "sonnet": "NOT_LINKED",
+    "sonnet": "STILL_LOOKING",
     "opus": null
    },
-   "verdict": "NOT_LINKED",
+   "verdict": "FOUND",
    "confidence": "high",
-   "found_by": "sonnet search",
-   "summary": "Behrend's construction (sets without 3-term arithmetic progressions) is fully formalized in the archive under the namespace `Formalism.BehrendSets`, including a definition `BehrendFree` and several supporting lemmas. However, every single module in this namespace is marked [NOT on proof path], confirming the author's parenthetical remark that this idea is 'obviously going to be unnecessary': it was coded up but ultimately not used by the final proof of the Riemann Hypothesis.",
+   "found_by": "Lean export check",
+   "summary": "Behrend sets are formalized (Formalism.BehrendSets: BehrendFree, sets free of k-term progressions) and 34 of their 89 declarations are used by the proof per Lean's export, although the note calls the idea unnecessary. Its role in choosing the Iwasawa tower was not traced.",
    "evidence": [
     {
      "name": "Formalism.BehrendSets.Statement.BehrendFree",
      "module": "Formalism.BehrendSets.Statement",
      "depth": null,
      "shows": "Defines `BehrendFree K T` (a Finset T of naturals is free of K-term arithmetic progressions in the Behrend sense) and states existence theorems for such sets; this is the core of Behrend's construction used for the Iwasawa tower choice, but the module is not on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "Formalism.BehrendSets.BehrendVariance.SpaceFreeOfBehrendFree",
      "module": "Formalism.BehrendSets.BehrendVariance.SpaceFreeOfBehrendFree",
      "depth": null,
      "shows": "A supporting lemma connecting space-freeness to BehrendFree; part of the Behrend-sets infrastructure, also not on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     },
     {
      "name": "Formalism.BehrendSets.FinalE",
      "module": "Formalism.BehrendSets.FinalE",
      "depth": null,
      "shows": "A final result in the BehrendSets library that imports SpaceFreeOfBehrendFree; not on the proof path.",
-     "validated": "found by whole-archive text search; no path from the proof in our graph"
+     "validated": "used by the proof per Lean's export (rh-trim cut lists)"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "STILL_LOOKING"
   },
   {
    "id": "P3_O2n_mult2",
@@ -618,9 +773,9 @@
     "opus": "NOT_FOUND"
    },
    "verdict": "NOT_FOUND",
-   "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The specific idea of 'multiplicity 2 on O(2,n) via a natively-automorphic determinant' is not formalized in the archive. The archive works with unitary groups and a VWin framework for winning multiplicity via theta lifts, but O(2,n) orthogonal groups do not appear on the proof path. A 'weil_orthogonal_group_invariance' theorem and 'AutomorphicDetection' modules exist in the archive but are NOT on the proof path.",
+   "confidence": null,
+   "found_by": "whole-archive census + Lean export check",
+   "summary": "Not found by our searches. Orthogonal groups we found occur only as the isometry group {g : gᵀBg = B} of a bilinear form, in the invariance of the Weil representation (weil_orthogonal_group_invariance, any form, no signature); our first orthogonal-group pattern missed this lemma because of a regex word boundary. The signature-(2, n) / GSpin / Type IV pattern matched 59 used declarations; the ones we read use CliffordAlgebra as an exterior algebra. What we know the proof uses instead: hermitian spaces with unitary signature ε : Fin n → Bool (8,177 used declarations), and a chain of theta lifts between unitary groups.",
    "evidence": [
     {
      "name": "UpperTheory.Top.VWin",
@@ -644,7 +799,9 @@
      "validated": "on proof path"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "NOT_FOUND",
+   "related": "Related, not the idea: a determinant of modular forms is used (wronskian_E₄_E₆_ne_zero), for SL₂. The patterns for Borcherds, Heegner, discriminant forms, vector-valued modular forms and Mp₂ had 0 matches in statements and proof bodies."
   },
   {
    "id": "F3_gauss_sum_cover",
@@ -654,9 +811,9 @@
     "opus": "NOT_FOUND"
    },
    "verdict": "NOT_FOUND",
-   "confidence": "medium",
-   "found_by": "opus search",
-   "summary": "The specific construction of a normalized Gauss sum of order #|mu_K| on the #|mu_K|-fold cover of GL2, with the reciprocity law giving a complete graph simplified to a path quadric, is not formalized anywhere in the archive. The archive has a local Gauss sum (gaussSumAt) on the proof path for Hecke epsilon factors, and metaplectic representation code off the proof path, but neither matches this concept. The idea appears to be informal motivation in Footnote 3 for why the path quadric arises, not a separately formalized step.",
+   "confidence": null,
+   "found_by": "whole-archive census + Lean export check",
+   "summary": "Not found by our searches. Gauss sums (55 used declarations) and the metaplectic Weil representation (114 used) were found, but the patterns for Kubota, Hilbert symbols, n-th order Gauss sums and cubic or higher reciprocity laws had 0 matches in statements and proof bodies. What we know the proof uses instead, in the note's own words: \"Gauss-sum cancellation replaced by iterated Parseval\"; the proof's theta lifts live under ThetaParseval (3,079 used declarations).",
    "evidence": [
     {
      "name": "GlobalTheory.HeckeEps.gaussSumAt",
@@ -666,7 +823,9 @@
      "validated": "on proof path"
     }
    ],
-   "correction": null
+   "correction": null,
+   "previous_verdict": "NOT_FOUND",
+   "related": "Related, not the idea: Stickelberger factorization of finite-field Gauss sums (148 used declarations) and a hypothesis named after Kazhdan–Patterson on unitary Eisenstein series are used."
   }
  ]
 }
